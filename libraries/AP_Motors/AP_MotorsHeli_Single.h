@@ -20,6 +20,8 @@
 #define AP_MOTORS_HELI_SINGLE_TAILTYPE_DIRECTDRIVE_FIXEDPITCH_CW  3
 #define AP_MOTORS_HELI_SINGLE_TAILTYPE_DIRECTDRIVE_FIXEDPITCH_CCW 4
 
+// new parameter for collective governor
+#define AP_COLL_GOV_P                                           0
 
 // direct-drive variable pitch defaults
 #define AP_MOTORS_HELI_SINGLE_DDVP_SPEED_DEFAULT               50
@@ -138,6 +140,8 @@ protected:
     float _servo3_out = 0.0f;                   // output value sent to motor
     float _servo4_out = 0.0f;                   // output value sent to motor
     float _servo5_out = 0.0f;                   // output value sent to motor
+    float _rotor_rpm;                           // rotor rpm from speed sensor for governor
+    bool  _governor_engage;             // RSC governor status flag for soft-start
 
     // parameters
     AP_Int16        _tail_type;                 // Tail type used: Servo, Servo with external gyro, direct drive variable pitch or direct drive fixed pitch
@@ -146,6 +150,8 @@ protected:
     AP_Float        _collective_yaw_effect;     // Feed-forward compensation to automatically add rudder input when collective pitch is increased. Can be positive or negative depending on mechanics.
     AP_Int8         _flybar_mode;               // Flybar present or not.  Affects attitude controller used during ACRO flight mode
     AP_Int16        _direct_drive_tailspeed;    // Direct Drive VarPitch Tail ESC speed (0 ~ 1000)
+    AP_Float        _coll_kp;                   // p-gain for collective governor
+    AP_Float        _governor_reference;         // reference rpm of th governor
 
     bool            _acro_tail = false;
 };

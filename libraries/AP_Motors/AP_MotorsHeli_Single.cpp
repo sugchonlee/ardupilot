@@ -18,6 +18,7 @@
 #include <SRV_Channel/SRV_Channel.h>
 #include "AP_MotorsHeli_Single.h"
 #include <GCS_MAVLink/GCS.h>
+#include "AP_MotorsHeli_RSC.h"
 
 extern const AP_HAL::HAL& hal;
 
@@ -78,6 +79,14 @@ const AP_Param::GroupInfo AP_MotorsHeli_Single::var_info[] = {
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("GYR_GAIN_ACRO", 11, AP_MotorsHeli_Single,  _ext_gyro_gain_acro, 0),
+
+    // @Param: COLL_GOV_P
+    // @DisplayName: Collective Governor P-Gain
+    // @Description: Amount of collective governor output corresponding to rpm error
+    // @Range: 0 0.1
+    // @Units: /RPM
+    // @User: Advanced
+    AP_GROUPINFO("COLL_GOV_P", 12, AP_MotorsHeli_Single, _coll_kp, 0),
 
     // Indices 16-19 were used by RSC_PWM_MIN, RSC_PWM_MAX, RSC_PWM_REV, and COL_CTRL_DIR and should not be used
 
@@ -405,8 +414,37 @@ void AP_MotorsHeli_Single::move_actuators(float roll_out, float pitch_out, float
         limit.pitch = true;
     }
 
-    // constrain collective input
+    // compute rpm error
+        float rpm_error = _governor_reference - _rotor_rpm;
+
+    // constraint rpm error to limit collective governor range
+    if (rpm_error >= 20.0f) {
+        rpm_error = 20.0f;
+    }
+    if (rpm_error <= -20.0f) {
+        rpm_error = -20.0f;
+    }
+
+    // check kp
+    if (_coll_kp <= 0.0f) {
+        _coll_kp = 0.0f;
+    }
+    if (_coll_kp >= 0.1f) {
+        _coll_kp = 0.1f;
+    }
+
+    // compute collective governor output
+    float coll_gov = _coll_kp * rpm_error;
+
     float collective_out = coll_in;
+    // collective governor on/off
+    if (_governor_engage) {
+        collective_out = coll_in + coll_gov;
+        } else {
+        collective_out = coll_in;
+        }
+
+    // constraint collective output
     if (collective_out <= 0.0f) {
         collective_out = 0.0f;
         limit.throttle_lower = true;
@@ -415,7 +453,7 @@ void AP_MotorsHeli_Single::move_actuators(float roll_out, float pitch_out, float
         collective_out = 1.0f;
         limit.throttle_upper = true;
     }
-
+    
     // ensure not below landed/landing collective
     if (_heliflags.landing_collective && collective_out < _collective_mid_pct && !_heliflags.in_autorotation) {
         collective_out = _collective_mid_pct;
