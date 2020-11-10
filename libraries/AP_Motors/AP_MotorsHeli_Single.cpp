@@ -80,13 +80,13 @@ const AP_Param::GroupInfo AP_MotorsHeli_Single::var_info[] = {
     // @User: Standard
     AP_GROUPINFO("GYR_GAIN_ACRO", 11, AP_MotorsHeli_Single,  _ext_gyro_gain_acro, 0),
 
-    // @Param: COLL_GOV_P
+    // @Param: COL_GOV_P
     // @DisplayName: Collective Governor P-Gain
     // @Description: Amount of collective governor output corresponding to rpm error
     // @Range: 0 0.1
     // @Units: /RPM
     // @User: Advanced
-    AP_GROUPINFO("COLL_GOV_P", 12, AP_MotorsHeli_Single, _coll_kp, 0),
+    AP_GROUPINFO("COL_GOV_P", 12, AP_MotorsHeli_Single, _coll_kp, 0),
 
     // Indices 16-19 were used by RSC_PWM_MIN, RSC_PWM_MAX, RSC_PWM_REV, and COL_CTRL_DIR and should not be used
 
