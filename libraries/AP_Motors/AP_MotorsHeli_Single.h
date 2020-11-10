@@ -21,7 +21,7 @@
 #define AP_MOTORS_HELI_SINGLE_TAILTYPE_DIRECTDRIVE_FIXEDPITCH_CCW 4
 
 // new parameter for collective governor
-#define AP_COL_GOV_P                                           0
+#define AP_MOTORS_HELI_SINGLE_COL_GOV_P                                           0
 
 // direct-drive variable pitch defaults
 #define AP_MOTORS_HELI_SINGLE_DDVP_SPEED_DEFAULT               50

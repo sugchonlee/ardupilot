@@ -86,7 +86,7 @@ const AP_Param::GroupInfo AP_MotorsHeli_Single::var_info[] = {
     // @Range: 0 0.1
     // @Units: /RPM
     // @User: Advanced
-    AP_GROUPINFO("COL_GOV_P", 12, AP_MotorsHeli_Single, _coll_kp, 0),
+    AP_GROUPINFO("COL_GOV_P", 12, AP_MotorsHeli_Single, _coll_kp, AP_MOTORS_HELI_SINGLE_COL_GOV_P),
 
     // Indices 16-19 were used by RSC_PWM_MIN, RSC_PWM_MAX, RSC_PWM_REV, and COL_CTRL_DIR and should not be used
 
