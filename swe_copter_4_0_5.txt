@@ -1,0 +1,1 @@
+This branch is used to generate custom code for SWE multicopter firmware.
